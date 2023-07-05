@@ -64,7 +64,13 @@ sysbench.cmdline.options = {
    mysql_table_options =
       {"Extra table options, if MySQL is used. e.g. 'COLLATE latin1_bin'", ""},
    splittable =
-      {"Create READ WRITE or READ ONLY transactions to allow using a splitting proxy", "no"}
+      {"Create READ WRITE or READ ONLY transactions to allow using a splitting proxy", "no"},
+   start_range = 
+      {"Start range of warehouse visit", 1},
+   end_range =
+      {"End range of warehouse visit", 200},
+   remote_ratio =
+      {"Remote ratio of tpcc-workload", 0}
 }
 
 function sleep(n)
