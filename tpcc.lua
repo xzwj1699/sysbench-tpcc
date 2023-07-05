@@ -29,7 +29,9 @@ end
 function event()
   -- print( NURand (1023,1,3000))
   local max_trx =  sysbench.opt.enable_purge == "yes" and 24 or 23
-  local trx_type = sysbench.rand.uniform(1,max_trx)
+  -- local trx_type = sysbench.rand.uniform(1,max_trx)
+  -- tmp comment original sysbench-tpcc to generate new order only txn
+  local trx_type = sysbench.rand.uniform(1,10)
   if trx_type <= 10 then
     trx="new_order"
   elseif trx_type <= 20 then
