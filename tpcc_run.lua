@@ -35,6 +35,25 @@ function other_ware (home_ware)
     return tmp
 end
 
+function other_ware2 (home_ware)
+    local tmp
+
+    if sysbench.opt.scale == 1 then return home_ware end
+    repeat
+        tmp = sysbench.rand.uniform(1, sysbench.opt.scale)
+    until (tmp < sysbench.opt.start_range or tmp > sysbench.opt.end_range)
+    return tmp
+end
+
+function other_localware (home_ware)
+    local tmp
+    if sysbench.opt.scale == 1 then return home_ware end
+    repeat
+      tmp = sysbench.rand.uniform(sysbench.opt.start_range, sysbench.opt.end_range)
+    until tmp ~= home_ware
+    return tmp
+end
+
 function new_order()
 
 -- prep work
@@ -44,12 +63,23 @@ function new_order()
     local d_id = sysbench.rand.uniform(1, DIST_PER_WARE)
     local c_id = NURand(1023, 1, CUST_PER_DIST)
 
-    local ol_cnt = sysbench.rand.uniform(5, 15);
+    local start_range = sysbench.opt.start_range
+    local end_range = sysbench.opt.end_range
+    local remote_ratio = sysbench.opt.remote_ratio
+
+    -- local ol_cnt = sysbench.rand.uniform(5, 15);
+    local ol_cnt = 10
     local rbk = sysbench.rand.uniform(1, 100);
     local itemid = {}
     local supware = {}
     local qty = {}
     local all_local = 1
+
+    local cross_region = 0
+    if sysbench.rand.uniform(1, 100) <= remote_ratio
+    then
+        cross_region = 1
+    end
 
     for i = 1, ol_cnt
     do
@@ -61,9 +91,11 @@ function new_order()
         if sysbench.rand.uniform(1, 100) ~= 1
 	then
             supware[i] = w_id
-        else 
-            supware[i] = other_ware(w_id)
+  elseif cross_region == 1
+            supware[i] = other_ware2(w_id)
             all_local = 0
+  else
+            supware[i] = other_localware(w_id)
         end
         qty[i] = sysbench.rand.uniform(1, 10)
    end
